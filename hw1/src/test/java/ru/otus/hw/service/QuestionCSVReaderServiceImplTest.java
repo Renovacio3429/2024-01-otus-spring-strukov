@@ -2,7 +2,9 @@ package ru.otus.hw.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
+import ru.otus.hw.config.AppProperties;
+import ru.otus.hw.dao.CsvQuestionDao;
+import ru.otus.hw.dao.QuestionDao;
 import ru.otus.hw.domain.Answer;
 import ru.otus.hw.domain.Question;
 
@@ -12,25 +14,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class QuestionCSVReaderServiceImplTest {
 
-    private final String TEST_FILE_NAME = "questions.csv";
-
-    @Mock
-    private FileReaderUtilsService fileReaderUtilsService;
-
-    private FileReaderService<Question> fileReaderService;
+    private QuestionDao questionDao;
 
     @BeforeEach
     void setUp() {
-        fileReaderUtilsService = new FileReaderUtilsServiceImpl();
-        fileReaderService = new QuestionCSVReaderServiceImpl(fileReaderUtilsService);
+        var testFileNameProvider = new AppProperties("questions.csv");
+        questionDao = new CsvQuestionDao(testFileNameProvider);
     }
 
     @Test
     public void read() {
 
         var question = getTestcaseQuestion();
-        var testQuestions = fileReaderService.read(TEST_FILE_NAME);
-        var testQuestion = testQuestions.get(0);
+        var testQuestion = questionDao.findAll().get(0);
 
         assertEquals(testQuestion.text(), question.text());
 

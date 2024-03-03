@@ -14,13 +14,8 @@
     <bean id="appProperties" class="ru.otus.hw.config.AppProperties">
         <constructor-arg value="questions.csv"/>
     </bean>
-    <bean id="fileReaderUtils" class="ru.otus.hw.service.FileReaderUtilsServiceImpl"/>
-    <bean id="questionCSVReader" class="ru.otus.hw.service.QuestionCSVReaderServiceImpl">
-        <constructor-arg ref="fileReaderUtils"/>
-    </bean>
     <bean id="questionDao" class="ru.otus.hw.dao.CsvQuestionDao">
         <constructor-arg ref="appProperties"/>
-        <constructor-arg ref="questionCSVReader"/>
     </bean>
     <bean id="testService" class="ru.otus.hw.service.TestServiceImpl">
         <constructor-arg ref="ioService"/>
