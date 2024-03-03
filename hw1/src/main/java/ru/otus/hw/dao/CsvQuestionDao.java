@@ -2,7 +2,6 @@ package ru.otus.hw.dao;
 
 import com.opencsv.bean.CsvToBeanBuilder;
 import lombok.RequiredArgsConstructor;
-import ru.otus.hw.Application;
 import ru.otus.hw.config.TestFileNameProvider;
 import ru.otus.hw.dao.dto.QuestionDto;
 import ru.otus.hw.domain.Question;
@@ -46,8 +45,7 @@ public class CsvQuestionDao implements QuestionDao {
 
     private File getFileFromResource(String fileName) {
 
-        ClassLoader classLoader = Application.class.getClassLoader();
-        URL resource = classLoader.getResource(fileName);
+        URL resource = getClass().getClassLoader().getResource(fileName);
 
         if (resource == null) {
             throw new IllegalArgumentException("File not found! " + fileName);
