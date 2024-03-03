@@ -8,9 +8,8 @@ import java.util.List;
 
 @RequiredArgsConstructor
 public class TestServiceImpl implements TestService {
-    private final IOService ioService;
     private final QuestionDao questionDao;
-    
+    private final IOService ioService;
     @Override
     public void executeTest() {
         ioService.printLine("");
