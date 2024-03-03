@@ -8,7 +8,6 @@ import java.util.List;
 
 @RequiredArgsConstructor
 public class TestServiceImpl implements TestService {
-
     private final IOService ioService;
     private final QuestionDao questionDao;
 
