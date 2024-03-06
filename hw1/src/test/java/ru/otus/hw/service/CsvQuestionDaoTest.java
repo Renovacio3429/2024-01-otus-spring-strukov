@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class QuestionCSVReaderServiceImplTest {
+public class CsvQuestionDaoTest {
 
     private QuestionDao questionDao;
 

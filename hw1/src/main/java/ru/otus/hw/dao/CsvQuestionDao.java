@@ -7,16 +7,18 @@ import ru.otus.hw.dao.dto.QuestionDto;
 import ru.otus.hw.domain.Question;
 import ru.otus.hw.exceptions.QuestionReadException;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
+import java.io.*;
 import java.util.List;
 
 @RequiredArgsConstructor
 public class CsvQuestionDao implements QuestionDao {
     private final TestFileNameProvider fileNameProvider;
+
+    public static final String PREFIX = "file";
+
+    public static final String SUFFIX = ".tmp";
+
+    public static final int DEFAULT_BUFFER_SIZE = 8192;
 
     @Override
     public List<Question> findAll() {
@@ -24,7 +26,7 @@ public class CsvQuestionDao implements QuestionDao {
     }
 
     private List<Question> readFileByName(String fileName) {
-        var file = this.getFileFromResource(fileName);
+        var file = this.getFileFromResources(fileName);
 
         try (var fileReader = new FileReader(file)) {
             var csvContext = new CsvToBeanBuilder<QuestionDto>(fileReader)
@@ -43,18 +45,36 @@ public class CsvQuestionDao implements QuestionDao {
         }
     }
 
-    private File getFileFromResource(String fileName) {
+    private InputStream getISFromResource(String fileName) {
+        ClassLoader classLoader = getClass().getClassLoader();
+        InputStream inputStream = classLoader.getResourceAsStream(fileName);
 
-        URL resource = getClass().getClassLoader().getResource(fileName);
-
-        if (resource == null) {
-            throw new IllegalArgumentException("File not found! " + fileName);
+        if (inputStream == null) {
+            throw new IllegalArgumentException("file not found! " + fileName);
+        } else {
+            return inputStream;
         }
+    }
+
+    public File getFileFromResources (String fileName) {
+        InputStream in = getISFromResource(fileName);
 
         try {
-            return new File(resource.toURI());
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
+            final File tempFile = File.createTempFile(PREFIX, SUFFIX);
+            tempFile.deleteOnExit();
+
+            try (FileOutputStream out = new FileOutputStream(tempFile)) {
+
+                int read;
+                byte[] bytes = new byte[DEFAULT_BUFFER_SIZE];
+                while ((read = in.read(bytes)) != -1) {
+                    out.write(bytes, 0, read);
+                }
+                return tempFile;
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage());
         }
     }
 }
