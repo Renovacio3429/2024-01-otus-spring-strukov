@@ -54,16 +54,16 @@ public class CsvQuestionDao implements QuestionDao {
         InputStream in = getISFromResource(fileName);
 
         try {
-            String PREFIX = "file";
-            String SUFFIX = ".tmp";
-            final File tempFile = File.createTempFile(PREFIX, SUFFIX);
+            String prefix = "file";
+            String suffux = ".tmp";
+            final File tempFile = File.createTempFile(prefix, suffux);
             tempFile.deleteOnExit();
 
             try (FileOutputStream out = new FileOutputStream(tempFile)) {
 
                 int read;
-                int DEFAULT_BUFFER_SIZE = 8192;
-                byte[] bytes = new byte[DEFAULT_BUFFER_SIZE];
+                int defaultBufferSize = 8192;
+                byte[] bytes = new byte[defaultBufferSize];
                 while ((read = in.read(bytes)) != -1) {
                     out.write(bytes, 0, read);
                 }
