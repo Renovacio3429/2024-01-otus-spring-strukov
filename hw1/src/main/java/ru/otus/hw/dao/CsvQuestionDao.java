@@ -14,11 +14,11 @@ import java.util.List;
 public class CsvQuestionDao implements QuestionDao {
     private final TestFileNameProvider fileNameProvider;
 
-    public static final String PREFIX = "file";
+    public final String PREFIX = "file";
 
-    public static final String SUFFIX = ".tmp";
+    public final String SUFFIX = ".tmp";
 
-    public static final int DEFAULT_BUFFER_SIZE = 8192;
+    public final int DEFAULT_BUFFER_SIZE = 8192;
 
     @Override
     public List<Question> findAll() {
