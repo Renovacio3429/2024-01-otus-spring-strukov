@@ -14,12 +14,6 @@ import java.util.List;
 public class CsvQuestionDao implements QuestionDao {
     private final TestFileNameProvider fileNameProvider;
 
-    public final String PREFIX = "file";
-
-    public final String SUFFIX = ".tmp";
-
-    public final int DEFAULT_BUFFER_SIZE = 8192;
-
     @Override
     public List<Question> findAll() {
         return this.readFileByName(fileNameProvider.getTestFileName());
@@ -60,12 +54,15 @@ public class CsvQuestionDao implements QuestionDao {
         InputStream in = getISFromResource(fileName);
 
         try {
+            String PREFIX = "file";
+            String SUFFIX = ".tmp";
             final File tempFile = File.createTempFile(PREFIX, SUFFIX);
             tempFile.deleteOnExit();
 
             try (FileOutputStream out = new FileOutputStream(tempFile)) {
 
                 int read;
+                int DEFAULT_BUFFER_SIZE = 8192;
                 byte[] bytes = new byte[DEFAULT_BUFFER_SIZE];
                 while ((read = in.read(bytes)) != -1) {
                     out.write(bytes, 0, read);
