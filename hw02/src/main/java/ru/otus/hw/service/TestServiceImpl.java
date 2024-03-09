@@ -8,8 +8,6 @@ import ru.otus.hw.domain.Question;
 import ru.otus.hw.domain.Student;
 import ru.otus.hw.domain.TestResult;
 
-import java.util.List;
-
 @RequiredArgsConstructor
 @Service
 public class TestServiceImpl implements TestService {
