@@ -8,7 +8,7 @@ import java.util.Locale;
 import java.util.Map;
 
 @ConfigurationProperties(prefix = "test")
-public class AppProperties implements TestConfig, TestFileNameProvider, LocaleConfig {
+public class AppProperties implements TestConfig, TestFileNameProvider, LocaleProvider {
 
     @Getter
     private final int rightAnswersCountToPass;
