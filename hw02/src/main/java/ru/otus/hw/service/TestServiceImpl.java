@@ -10,7 +10,6 @@ import ru.otus.hw.domain.TestResult;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.IntStream;
 
 @RequiredArgsConstructor
 @Service
@@ -40,12 +39,14 @@ public class TestServiceImpl implements TestService {
 
     private Map<Integer, Answer> printAnswers(Question question) {
         var answerIdxMapping = new HashMap<Integer, Answer>();
-        IntStream.rangeClosed(1, question.answers().size())
-                .forEach(i -> {
-                    var answer = question.answers().get(i - 1);
-                    ioService.printLine(i + ") " + answer.text());
-                    answerIdxMapping.put(i, answer);
-                });
+
+        for (int i = 0; i < question.answers().size(); i++) {
+            var answer = question.answers().get(i);
+
+            var mapIdx = i + 1;
+            ioService.printLine(mapIdx + ") " + answer.text());
+            answerIdxMapping.put(mapIdx, answer);
+        }
 
         return answerIdxMapping;
     }
