@@ -2,19 +2,19 @@ package ru.otus.hw.dao;
 
 import com.opencsv.bean.CsvToBeanBuilder;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 import ru.otus.hw.config.TestFileNameProvider;
 import ru.otus.hw.dao.dto.QuestionDto;
 import ru.otus.hw.domain.Question;
 import ru.otus.hw.exceptions.QuestionReadException;
 
-import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
 @RequiredArgsConstructor
-@Repository
+@Component
 public class CsvQuestionDao implements QuestionDao {
     private final TestFileNameProvider fileNameProvider;
 
@@ -24,7 +24,9 @@ public class CsvQuestionDao implements QuestionDao {
     }
 
     private List<Question> readFileByName(String fileName) {
-        try (var reader = new InputStreamReader(this.getFileFromResource(fileName))) {
+        var file = this.getFileFromResource(fileName);
+
+        try (var reader = new InputStreamReader(file)) {
             var csvContext = new CsvToBeanBuilder<QuestionDto>(reader)
                     .withType(QuestionDto.class)
                     .withSkipLines(1)
