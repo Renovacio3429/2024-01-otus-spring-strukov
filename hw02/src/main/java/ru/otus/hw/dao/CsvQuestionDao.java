@@ -24,9 +24,7 @@ public class CsvQuestionDao implements QuestionDao {
     }
 
     private List<Question> readFileByName(String fileName) {
-        var is = this.getFileFromResource(fileName);
-
-        try (var reader = new InputStreamReader(is)) {
+        try (var reader = new InputStreamReader(this.getFileFromResource(fileName))) {
             var csvContext = new CsvToBeanBuilder<QuestionDto>(reader)
                     .withType(QuestionDto.class)
                     .withSkipLines(1)
