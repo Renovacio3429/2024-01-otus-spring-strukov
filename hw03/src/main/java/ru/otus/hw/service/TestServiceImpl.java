@@ -33,7 +33,11 @@ public class TestServiceImpl implements TestService {
 
             var answerIdxMapping = this.printAnswers(question);
             ioService.printLineLocalized("TestService.answer.user.input");
-            var userAnswer = ioService.readIntForRange(1, question.answers().size(), ioService.getMessage("TestService.answer.the.error.number"));
+            var userAnswer = ioService.readIntForRange(
+                    1, 
+                    question.answers().size(),
+                    ioService.getMessage("TestService.answer.the.error.number")
+            );
             var isAnswerValid = answerIdxMapping.get(userAnswer).isCorrect();
             testResult.applyAnswer(question, isAnswerValid);
         }
