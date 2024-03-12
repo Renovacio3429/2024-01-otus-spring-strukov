@@ -11,6 +11,7 @@ import ru.otus.hw.dao.CsvQuestionDao;
 import ru.otus.hw.dao.QuestionDao;
 import ru.otus.hw.domain.Student;
 
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.when;
 
@@ -39,8 +40,8 @@ public class TestServiceTest {
         when(appProperties.getTestFileName())
                 .thenReturn("questions.csv");
 
-        when(ioService.readStringWithPrompt(anyString()))
-                .thenReturn("Science doesn't know this yet");
+        when(ioService.readIntForRange(anyInt(), anyInt(), anyString()))
+                .thenReturn(1);
 
         var testStudent = new Student("Test", "Testovich");
         var result = testService.executeTestFor(testStudent);
