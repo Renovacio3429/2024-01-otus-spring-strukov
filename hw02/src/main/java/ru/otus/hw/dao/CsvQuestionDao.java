@@ -8,11 +8,9 @@ import ru.otus.hw.dao.dto.QuestionDto;
 import ru.otus.hw.domain.Question;
 import ru.otus.hw.exceptions.QuestionReadException;
 
-import java.io.FileReader;
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.InputStream;
-import java.io.FileOutputStream;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -26,10 +24,10 @@ public class CsvQuestionDao implements QuestionDao {
     }
 
     private List<Question> readFileByName(String fileName) {
-        var file = this.getFileFromResources(fileName);
+        var is = this.getFileFromResource(fileName);
 
-        try (var fileReader = new FileReader(file)) {
-            var csvContext = new CsvToBeanBuilder<QuestionDto>(fileReader)
+        try (var reader = new InputStreamReader(is)) {
+            var csvContext = new CsvToBeanBuilder<QuestionDto>(reader)
                     .withType(QuestionDto.class)
                     .withSkipLines(1)
                     .withSeparator(';')
@@ -45,7 +43,7 @@ public class CsvQuestionDao implements QuestionDao {
         }
     }
 
-    private InputStream getISFromResource(String fileName) {
+    private InputStream getFileFromResource(String fileName) {
         ClassLoader classLoader = getClass().getClassLoader();
         InputStream inputStream = classLoader.getResourceAsStream(fileName);
 
@@ -53,31 +51,6 @@ public class CsvQuestionDao implements QuestionDao {
             throw new IllegalArgumentException("file not found! " + fileName);
         } else {
             return inputStream;
-        }
-    }
-
-    public File getFileFromResources (String fileName) {
-        InputStream in = getISFromResource(fileName);
-
-        try {
-            String prefix = "file";
-            String suffix = ".tmp";
-            final File tempFile = File.createTempFile(prefix, suffix);
-            tempFile.deleteOnExit();
-
-            try (FileOutputStream out = new FileOutputStream(tempFile)) {
-
-                int read;
-                int defaultBufferSize = 8192;
-                byte[] bytes = new byte[defaultBufferSize];
-                while ((read = in.read(bytes)) != -1) {
-                    out.write(bytes, 0, read);
-                }
-                return tempFile;
-            }
-
-        } catch (IOException e) {
-            throw new RuntimeException(e.getMessage());
         }
     }
 }

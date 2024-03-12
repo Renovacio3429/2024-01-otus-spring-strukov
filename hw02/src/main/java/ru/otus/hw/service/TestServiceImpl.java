@@ -8,6 +8,10 @@ import ru.otus.hw.domain.Question;
 import ru.otus.hw.domain.Student;
 import ru.otus.hw.domain.TestResult;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.IntStream;
+
 @RequiredArgsConstructor
 @Service
 public class TestServiceImpl implements TestService {
@@ -18,35 +22,31 @@ public class TestServiceImpl implements TestService {
 
     @Override
     public TestResult executeTestFor(Student student) {
-        ioService.printLine("");
         ioService.printFormattedLine("Please answer the questions below%n");
         var questions = questionDao.findAll();
         var testResult = new TestResult(student);
 
         for (var question : questions) {
-            var validAnswer = question.answers()
-                    .stream()
-                    .filter(Answer::isCorrect)
-                    .findFirst();
+            ioService.printLine("Question: " + question.text());
+            ioService.printLine("Possible answers:" + System.lineSeparator());
 
-            // skip question without correct answer
-            validAnswer.ifPresent(answer -> {
-                printQuestion(question);
-
-                var userAnswer = ioService.readStringWithPrompt("Write your answer: ");
-                var isAnswerValid = answer.text().equals(userAnswer);
-
-                testResult.applyAnswer(question, isAnswerValid);
-            });
+            var answerIdxMapping = this.printAnswers(question);
+            var userAnswer = ioService.readIntForRange(1, question.answers().size(), "Write correct answer number!");
+            var isAnswerValid = answerIdxMapping.get(userAnswer).isCorrect();
+            testResult.applyAnswer(question, isAnswerValid);
         }
         return testResult;
     }
 
-    private void printQuestion(Question q) {
-        ioService.printLine("Question: " + q.text() + "%n");
-        ioService.printLine("Possible answers: ");
-        ioService.printLine("");
-        q.answers().forEach(a -> ioService.printLine(a.text()));
-        ioService.printLine("");
+    private Map<Integer, Answer> printAnswers(Question question) {
+        var answerIdxMapping = new HashMap<Integer, Answer>();
+        IntStream.rangeClosed(1, question.answers().size())
+                .forEach(i -> {
+                    var answer = question.answers().get(i - 1);
+                    ioService.printLine(i + ") " + answer.text());
+                    answerIdxMapping.put(i, answer);
+                });
+
+        return answerIdxMapping;
     }
 }
