@@ -12,10 +12,12 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.any;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
 public class TestServiceImplTest {
@@ -31,16 +33,17 @@ public class TestServiceImplTest {
     @BeforeEach
     public void init() {
         when(questionDao.findAll()).thenReturn(getDummyQuestions());
+        when(localizedIOService.readIntForRange(anyInt(), anyInt(), any())).thenReturn(2);
         testService = new TestServiceImpl(localizedIOService, questionDao);
     }
 
     @Test
     public void shouldInvokeIoServiceMethodsWithExpectedArgumentsDuringTestExecution() {
         var testStudent = new Student("Test", "Testovich");
-        testService.executeTestFor(testStudent);
+        var testResult = testService.executeTestFor(testStudent);
 
-        verify(localizedIOService, times(2)).printLineLocalized(any());
-        verify(localizedIOService, times(1)).printLineLocalized("TestService.answer.the.question");
+        verify(localizedIOService, times(4)).printLineLocalized(any());
+        assertEquals(1, testResult.getRightAnswersCount());
     }
 
     private List<Question> getDummyQuestions() {
